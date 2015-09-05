@@ -1,0 +1,5 @@
+TODO: add installation instructions
+TODO: how to modify the shell command that will be used?
+TODO: how to control where the new window goes?
+TODO: shortcut key for re-running the command ... also need to make this configurable
+TODO: talk about where the return value will go?
