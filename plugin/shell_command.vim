@@ -69,12 +69,6 @@ function! <SID>RunShellCommandHere()
     let l:cmd .= ' 2>&1'
   endif
 
-  " whether or not to use the 'col' utility to strip escape sequences (colors,
-  " etc)
-  if ! exists('g:shell_command_use_col') || g:shell_command_use_col
-    let l:cmd .= ' | col -b'
-  endif
-
   " get ready for editing the file again
   setlocal modifiable noreadonly
 
@@ -95,6 +89,15 @@ function! <SID>RunShellCommandHere()
   echohl error
   try
     exe 'read !'.l:cmd
+    let l:shell_error = v:shell_error
+
+    " whether or not to use the 'col' utility to strip escape sequences (colors,
+    " etc)
+    if ! exists('g:shell_command_use_col') || g:shell_command_use_col
+      if line('$') > 1
+        2,$!col -bx
+      endif
+    endif
   finally
     echohl None
   endtry
@@ -103,8 +106,8 @@ function! <SID>RunShellCommandHere()
   " set options to prevent user editing by accident? No never mind
   setlocal nomodified
 
-  if v:shell_error
-    silent exe 'file ['.v:shell_error.']\ '.escape(l:command, '`|"\! #%')
+  if l:shell_error
+    silent exe 'file ['.l:shell_error.']\ '.escape(l:command, '`|"\! #%')
   else
     silent exe 'file' escape(l:command, '`|"\! #%')
   endif
