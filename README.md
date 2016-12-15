@@ -7,6 +7,11 @@ To run the `man test` and see the output in a new window, use:
 
     :Shell man test
 
+You will notice that the new buffer contains a line starting with
+`## Shell:` followed by the command you requested. You can edit this
+line and then use `F5` to re-run the new command.
+
+
 ## Options
 
 By default, the output of your shell command will be filtered through `col -b`
