@@ -14,7 +14,7 @@ command! -nargs=0 ShellRerun call ShellCommandRerunAll()
 
 
 " helper function
-function! ShellCommandRun(interactive, command)
+function! ShellCommandRun(interactive, command) "{{{
   " create a new buffer
   new
 
@@ -39,9 +39,9 @@ function! ShellCommandRun(interactive, command)
     let l:keymap = g:shell_command_reload_map
   endif
   execute 'nnoremap <buffer> '.l:keymap.' :call <SID>RunShellCommandHere()<CR>'
-endfunction
+endfunction "}}}
 
-function! <SID>RunShellCommandHere()
+function! <SID>RunShellCommandHere() "{{{
   " restore syntax highlighting in case it was reset
   syntax clear
   syntax region Comment start=/^\%1l## Shelli\=:/ end=/$/
@@ -112,21 +112,21 @@ function! <SID>RunShellCommandHere()
     silent exe 'file' escape(l:command, '`|"\! #%')
   endif
   redraw!
-endfunction
+endfunction "}}}
 
 
 " remove from :shell_buffers, any buffer numbers that no longer exist
-function! <SID>CleanShellBuffersList()
+function! <SID>CleanShellBuffersList() "{{{
   for l:bufnr in keys(s:shell_buffers)
     if ! bufexists(l:bufnr * 1)
       call remove(s:shell_buffers, l:bufnr)
     endif
   endfor
-endfunction
+endfunction "}}}
 
 
 " rerun shell commands in any buffers that are open in the current window
-function! ShellCommandRerunAll()
+function! ShellCommandRerunAll() "{{{
   let l:origwinnr = winnr()
   try
     for l:bufnr in keys(s:shell_buffers)
@@ -142,4 +142,4 @@ function! ShellCommandRerunAll()
     " return to the original window
     exe l:origwinnr.'wincmd w'
   endtry
-endfunction
+endfunction "}}}
