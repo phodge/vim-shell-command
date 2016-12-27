@@ -1,3 +1,8 @@
+if exists('g:loaded_shell_command') || v:version < 700 || &cp
+    finish
+endif
+let g:loaded_shell_command = 1
+
 if ! exists('s:shell_buffers') || type(s:shell_buffers) != type({})
   let s:shell_buffers = {}
 endif
