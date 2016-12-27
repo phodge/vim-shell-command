@@ -33,6 +33,10 @@ For example:
 At the top of the buffer will be a line `## Shell:` and the command that you
 entered.  You can edit this line and re-run the command with <F5>
 
+To disable the plugin:
+>
+   let g:loaded_shell_command = 1
+
 ==============================================================================
 3. Configuration~
                                                      *vim-shell-configuration*
