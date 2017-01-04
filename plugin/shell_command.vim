@@ -22,6 +22,7 @@ command! -nargs=0 ShellRerun call ShellCommandRerunAll()
 function! ShellCommandRun(interactive, command) "{{{
   " create a new buffer
   new
+  setfiletype shell-command
 
   " register the new buffer, clean out old buffers
   let s:shell_buffers[bufnr('')] = 0
