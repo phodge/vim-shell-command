@@ -4,7 +4,4 @@ elseif exists("b:current_syntax")
   finish
 endif
 
-syn match shComment "^##.*$"
-
-
-hi def link shComment Comment
+syntax region Comment start=/^\%1l## Shelli\=:/ end=/$/
