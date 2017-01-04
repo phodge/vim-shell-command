@@ -33,6 +33,9 @@ For example:
 At the top of the buffer will be a line `## Shell:` and the command that you
 entered.  You can edit this line and re-run the command with <F5>
 
+The buffer that comes up will have a `shell-command` 'filetype' so you can
+control the settings in it with FileType |:autocmd|s
+
 To disable the plugin:
 >
    let g:loaded_shell_command = 1
