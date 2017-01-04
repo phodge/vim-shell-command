@@ -1,0 +1,84 @@
+*shell_command.txt*  Get the output of a shell command in a buffer
+
+                ┌─┐┬ ┬┌─┐┬  ┬   ┌─┐┌─┐┌┬┐┌┬┐┌─┐┌┐┌┌┬┐
+                └─┐├─┤├┤ │  │───│  │ │││││││├─┤│││ ││
+                └─┘┴ ┴└─┘┴─┘┴─┘ └─┘└─┘┴ ┴┴ ┴┴ ┴┘└┘─┴┘
+
+                                                           *vim-shell-command*
+==============================================================================
+CONTENTS                                              *shell-command-contents*
+
+    1. Intro ............................ |vim-shell-intro|
+    2. Usage ............................ |vim-shell-usage|
+    3. Configuration .................... |vim-shell-configuration|
+        3.1 Color  ...................... |vim-shell-shell_command_use_col|
+        3.2 Reload-Mapping .............. |vim-shell-shell_command_reload_map|
+
+==============================================================================
+1. Intro~
+                                                             *vim-shell-intro*
+
+Get a shell command into an editable Vim buffer with the ability to edit and
+re-run the command.
+
+==============================================================================
+2. Usage~
+                                                             *vim-shell-usage*
+
+Use :Shell to run a shell command and get the output into a new Vim buffer.
+For example:
+>
+    Shell man test
+<
+At the top of the buffer will be a line `## Shell:` and the command that you
+entered.  You can edit this line and re-run the command with <F5>
+
+==============================================================================
+3. Configuration~
+                                                     *vim-shell-configuration*
+------------------------------------------------------------------------------
+3.1 Color~
+                                             *vim-shell-shell_command_use_col*
+
+By default the command output is filtered through `col -b` to remove all
+terminal escape sequences.  You can change this by setting
+`g:shell_command_use_col`.
+Default: >
+    let g:shell_command_use_col = 0
+
+------------------------------------------------------------------------------
+3.1 Reload-Mapping~
+                                           *vim-shell-shell_command_reload_map*
+
+You can re-run the command with <F5> by default.  If you want a different
+mapping, set `g:shell_command_reload_map`.
+Default: >
+    let g:shell_command_reload_map = "<F5>"
+
+==============================================================================
+LICENSE                                                    *vim-shell-license*
+
+The MIT License (MIT)
+
+Copyright (c) 2015,2016 toomuchphp
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+==============================================================================
+vim:tw=78:fo=tcq2:isk=!-~,^*,^\|,^\":ts=8:ft=help:norl:
