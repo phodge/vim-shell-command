@@ -48,10 +48,6 @@ function! ShellCommandRun(interactive, command) "{{{
 endfunction "}}}
 
 function! <SID>RunShellCommandHere() "{{{
-  " restore syntax highlighting in case it was reset
-  syntax clear
-  syntax region Comment start=/^\%1l## Shelli\=:/ end=/$/
-
   " get the shell command from the header line
   let l:header = getline(1)
   let l:prefix = matchstr(l:header, '^## Shelli\=:')
