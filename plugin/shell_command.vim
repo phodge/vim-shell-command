@@ -61,7 +61,13 @@ function! <SID>RunShellCommandHere() "{{{
   let l:command = strpart(l:header, strlen(l:prefix))
 
   " make sure we capture STDERR as well
-  let l:cmd = '{ '.escape(l:command, '%#$!').'; }'
+  if exists('g:shell_command_escape_chars')
+    let l:escapechars = g:shell_command_escape_chars
+  else
+    let l:escapechars = '%#$!'
+  endif
+
+  let l:cmd = '{ '.escape(l:command, l:escapechars).'; }'
 
   " TODO: use the 'shellredir' option to either capture STDERR or engage
   " interactive mode ... interactive doesn't work currently
