@@ -9,17 +9,14 @@ endif
 
 
 " run a shell command
-command! -nargs=+ -complete=shellcmd Shell  call ShellCommandRun(0, <q-args>)
-
-" run a shell command interactively
-command! -nargs=+ -complete=shellcmd Shelli call ShellCommandRun(1, <q-args>)
+command! -nargs=+ -complete=shellcmd Shell  call ShellCommandRun(<q-args>)
 
 " rerun any shell commands in windows open in the current tab
 command! -nargs=0 ShellRerun call ShellCommandRerunAll()
 
 
 " helper function
-function! ShellCommandRun(interactive, command) "{{{
+function! ShellCommandRun(command) "{{{
   " create a new buffer
   new
   setfiletype shell-command
@@ -35,7 +32,7 @@ function! ShellCommandRun(interactive, command) "{{{
 
   " put the header on the file
   normal! ggdG
-  call setline(1, '## Shell'.(a:interactive?'i':'').': '.a:command)
+  call setline(1, '## Shell: '.a:command)
 
   call <SID>RunShellCommandHere()
 
@@ -50,13 +47,11 @@ endfunction "}}}
 function! <SID>RunShellCommandHere() "{{{
   " get the shell command from the header line
   let l:header = getline(1)
-  let l:prefix = matchstr(l:header, '^## Shelli\=:')
+  let l:prefix = matchstr(l:header, '^## Shell:')
   if ! strlen(l:prefix)
-    echoerr "File doesn't start with '## Shell:' or '## Shelli:"
+    echoerr "File doesn't start with '## Shell:'"
     return
   endif
-
-  let l:interactive = (l:prefix =~ 'Shelli')
 
   let l:command = strpart(l:header, strlen(l:prefix))
 
@@ -67,15 +62,7 @@ function! <SID>RunShellCommandHere() "{{{
     let l:escapechars = '%#$!'
   endif
 
-  let l:cmd = '{ '.escape(l:command, l:escapechars).'; }'
-
-  " TODO: use the 'shellredir' option to either capture STDERR or engage
-  " interactive mode ... interactive doesn't work currently
-  " NOTE: currently the 2>&1 is needed, otherwise STDERR is prepended to STDOUT
-  " which isn't really what you want
-  if ! l:interactive
-    let l:cmd .= ' 2>&1'
-  endif
+  let l:cmd = '{ '.escape(l:command, l:escapechars).'; } 2>&1'
 
   " get ready for editing the file again
   setlocal modifiable noreadonly

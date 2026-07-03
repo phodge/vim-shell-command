@@ -4,4 +4,4 @@ elseif exists("b:current_syntax")
   finish
 endif
 
-syntax region Comment start=/^\%1l## Shelli\=:/ end=/$/
+syntax region Comment start=/^\%1l## Shell:/ end=/$/
