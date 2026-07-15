@@ -25,3 +25,8 @@ shell window. If you would like to use an alternate key for the mapping, add
 this global variable to your `.vimrc`
 
     let g:shell_command_reload_map = "<F10>"
+
+
+## Development
+
+See `DEVELOPMENT.md`
