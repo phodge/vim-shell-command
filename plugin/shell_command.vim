@@ -101,10 +101,13 @@ function! <SID>RunShellCommandHere() "{{{
   " set options to prevent user editing by accident? No never mind
   setlocal nomodified
 
+  " Note: use 'noautocmd' here to avoid triggering GitGutter's autocmds which
+  " get confused by this buffer renaming and throw errors such as:
+  "   E605: Exception not caught: gitgutter rename error 6 18
   if l:shell_error
-    silent exe 'file ['.l:shell_error.']\ '.escape(l:command, '`|"\! #%')
+    silent exe 'noautocmd file ['.l:shell_error.']\ '.escape(l:command, '`|"\! #%')
   else
-    silent exe 'file' escape(l:command, '`|"\! #%')
+    silent exe 'noautocmd file' escape(l:command, '`|"\! #%')
   endif
   redraw!
 endfunction "}}}
