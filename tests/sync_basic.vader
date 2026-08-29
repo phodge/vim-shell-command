@@ -1,0 +1,39 @@
+Given:
+  Hello
+
+Execute (basic header):
+  Shell echo hello
+  AssertEqual '## Shell: echo hello', getline(1)
+
+Execute (filetype is shell-command):
+  Shell echo hello
+  AssertEqual 'shell-command', &filetype
+
+Execute (buffer options are set correctly):
+  Shell echo hello
+  AssertEqual 'nofile', &buftype
+  Assert !&swapfile
+  Assert &modifiable
+
+Execute (command output is captured):
+  Shell echo hello
+  " Line 1 is the header, line 2+ is output
+  Assert line('$') >= 2
+  let found = 0
+  for i in range(2, line('$'))
+    if getline(i) =~# 'hello'
+      let found = 1
+      break
+    endif
+  endfor
+  Assert found
+
+Execute (buffer name set on success):
+  Shell echo hello
+  let name = fnamemodify(bufname(''), ':t')
+  Assert name =~# 'echo hello'
+
+Execute (buffer name includes exit code on failure):
+  Shell exit 1
+  let name = fnamemodify(bufname(''), ':t')
+  Assert name =~# '^\[1\]'

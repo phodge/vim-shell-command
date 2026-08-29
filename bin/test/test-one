@@ -1,0 +1,80 @@
+#!/bin/bash
+#
+# Run one or more Vader test files.
+#
+# Usage:
+#   bin/test/test-one tests/sync_basic.vader
+#   bin/test/test-one tests/sync_basic.vader tests/sync_rerun.vader
+#   bin/test/test-one --vim  tests/sync_basic.vader
+#   bin/test/test-one --nvim tests/sync_basic.vader
+
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+VIMRC="$REPO_ROOT/tests/test-vimrc"
+
+# --- parse flags -----------------------------------------------------------
+
+RUN_VIM=true
+RUN_NVIM=true
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --vim)  RUN_NVIM=false; shift ;;
+        --nvim) RUN_VIM=false;  shift ;;
+        --*)    printf '%s\n' "Unknown option: $1" >&2; exit 1 ;;
+        *)      break ;;
+    esac
+done
+
+[ $# -gt 0 ] || { printf '%s\n' "Usage: test-one [--vim|--nvim] <file.vader> ..." >&2; exit 1; }
+
+# --- resolve test files ----------------------------------------------------
+
+TEST_FILES=()
+for f in "$@"; do
+    if [ -f "$f" ]; then
+        TEST_FILES+=("$f")
+    elif [ -f "$REPO_ROOT/$f" ]; then
+        TEST_FILES+=("$REPO_ROOT/$f")
+    else
+        printf '%s\n' "ERROR: file not found: $f" >&2
+        exit 1
+    fi
+done
+
+# --- run -------------------------------------------------------------------
+
+FAILURES=0
+OUTPUT_FILE=$(mktemp)
+
+cleanup() { rm -f "$OUTPUT_FILE"; }
+trap cleanup EXIT
+
+run_vader() {
+    local bin="$1" label="$2"
+    local rc=0
+    VADER_OUTPUT_FILE="$OUTPUT_FILE" "$bin" -Nu "$VIMRC" \
+        -c "Vader! ${TEST_FILES[*]}" </dev/null >/dev/null 2>&1 || rc=$?
+    if [ "$rc" -eq 0 ]; then
+        printf '%s\n' "PASS ($label)"
+    else
+        printf '%s\n' "FAIL ($label)"
+        cat "$OUTPUT_FILE" >&2
+        FAILURES=$((FAILURES + 1))
+    fi
+}
+
+if [ "$RUN_VIM" = true ]; then
+    printf '%s\n' "--- Vim ---"
+    run_vader vim Vim
+    printf '\n'
+fi
+
+if [ "$RUN_NVIM" = true ]; then
+    printf '%s\n' "--- Neovim ---"
+    run_vader nvim Neovim
+    printf '\n'
+fi
+
+exit "$FAILURES"

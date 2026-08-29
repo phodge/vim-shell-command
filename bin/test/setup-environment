@@ -1,0 +1,57 @@
+#!/bin/bash
+#
+# Ensure all test dependencies are present and new enough.
+
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+VADER_DIR="$REPO_ROOT/tests/vendor/vader.vim"
+
+# --- helpers ---------------------------------------------------------------
+
+log()  { printf '%s\n' "$*"; }
+warn() { printf 'WARNING: %s\n' "$*" >&2; }
+die()  { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
+
+# Check that a command exists and is at least a given major.minor version.
+# Usage: require_cmd <cmd> <min_version> [label]
+require_cmd() {
+    local cmd="$1" min="$2" label="${3:-$1}"
+    command -v "$cmd" >/dev/null 2>&1 || die "$label is not installed."
+
+    local raw
+    raw="$("$cmd" --version 2>&1 | head -1)"
+
+    # Extract the first occurrence of X.Y or X.Y.Z
+    local ver
+    ver="$(printf '%s' "$raw" | sed -nE 's/[^0-9]*([0-9]+\.[0-9]+(\.[0-9]+)?).*/\1/p' | head -1)"
+    [ -n "$ver" ] || die "Could not determine $label version from: $raw"
+
+    local major minor
+    major="$(printf '%s' "$ver" | cut -d. -f1)"
+    minor="$(printf '%s' "$ver" | cut -d. -f2)"
+    local min_major min_minor
+    min_major="$(printf '%s' "$min" | cut -d. -f1)"
+    min_minor="$(printf '%s' "$min" | cut -d. -f2)"
+
+    if [ "$major" -lt "$min_major" ] || \
+       { [ "$major" -eq "$min_major" ] && [ "$minor" -lt "${min_minor:-0}" ]; }; then
+        die "$label $ver is too old (need >= $min)"
+    fi
+
+    log "Found $label $ver"
+}
+
+# --- checks ----------------------------------------------------------------
+
+require_cmd vim  7.4 "Vim"
+require_cmd nvim 0.10 "Neovim"
+
+if [ ! -d "$VADER_DIR" ]; then
+    log "Cloning Vader.vim into $VADER_DIR ..."
+    git clone --depth 1 https://github.com/junegunn/vader.vim.git "$VADER_DIR"
+else
+    log "Vader.vim already present at $VADER_DIR"
+fi
+
+log "Environment ready."

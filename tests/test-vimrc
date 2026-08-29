@@ -1,0 +1,9 @@
+filetype off
+
+let s:repo_root = fnamemodify(resolve(expand('<sfile>:p')), ':h:h')
+
+execute 'set rtp+=' . s:repo_root . '/tests/vendor/vader.vim'
+execute 'set rtp+=' . s:repo_root
+
+filetype plugin indent on
+syntax enable
